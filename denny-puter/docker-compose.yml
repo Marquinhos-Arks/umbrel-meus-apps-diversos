@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: denny-puter_web_1
+      APP_PORT: 4100
+      PROXY_AUTH_ADD: "false"
+
+  web:
+    image: ghcr.io/heyputer/puter:2.5.1@sha256:0c5aa88f5d4db7749577b0118b16e674ff9db323604079b1b90ff6bafdcd0ab5
+    restart: on-failure
+    environment:
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true  # falls Webpack
+      - HOST=0.0.0.0
+      - PORT=4100
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${APP_DATA_DIR}/data:/data/.puter:rw
+      - ${APP_DATA_DIR}/config:/config:rw
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://umbrel-2.local:4100/test || exit 1
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s

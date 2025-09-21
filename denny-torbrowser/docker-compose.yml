@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: denny-torbrowser_web_1
+      APP_PORT: 5800
+      PROXY_AUTH_ADD: "false"
+  web:
+    image: domistyle/tor-browser:14.0.6@sha256:00b7ba0263e6cc46338fea406b48901f71a81e9fea028709751c6ad471a4a9a7
+    restart: always
+    environment:
+      - TZ=Europe/Berlin
+      - DARK_MODE=1
+      - WEB_AUDIO=1
+    volumes:
+      - ${APP_DATA_DIR}/config:/config
